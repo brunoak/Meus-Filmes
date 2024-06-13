@@ -1,0 +1,149 @@
+:root{
+    --font-color1: #FFFFFF;
+    --font-color-body: #17162e;
+    --font-color-form: #454558;
+    --font-color-text: #ACACAC;
+    --font-color-chack: #706EA8;
+    --font-color-form-text: #8A8A8A;
+    --color-filmes:#1D1C3B;
+    --font-family: "Kumbh Sans", sans-serif;
+}
+
+body{
+    font-family: var(--font-family);
+    text-align: center;
+    background-color: var(--font-color-body);
+}
+
+h1{
+    font-size: 36px;
+    font-weight: 600;
+    margin: 62px 0 48px;
+    color: var(--font-color1);
+}
+
+.pesquisa__checkbox{
+    display: flexbox;
+    align-items: center;
+}
+.pesquisa .pesquisa__texto{
+    width: 634px;
+    height: 74px;
+    border-radius: 8px;
+    border: none;
+    outline: 0;
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--font-color-form-text);
+    background-color: var(--font-color-form);
+    padding-left: 26px;
+    background-image: url(img/search-icon.svg);
+    background-repeat: no-repeat;
+    background-position: right 3% bottom 45%;
+    margin-bottom: 30px;
+}
+
+/* Estilo padrão do checkbox */
+.pesquisa input[type="checkbox"] {
+    display: none; /* Esconde o checkbox padrão */
+}
+
+/* Estilo do checkbox personalizado */
+.pesquisa input[type="checkbox"] + label::before {
+    content: ''; /* Adiciona um conteúdo vazio para criar o checkbox */
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--font-color-chack); /* Cor da borda */
+    background-color: transparent; /* Cor de fundo */
+    margin-right: 5px; /* Espaçamento à direita do checkbox */
+}
+
+/* Estilo do checkbox personalizado quando estiver marcado */
+.pesquisa input[type="checkbox"]:checked + label::before {
+    background-color: var(--font-color-chack); /* Cor de fundo quando estiver marcado */
+}
+
+.pesquisa label{
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--font-color1);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 64px;
+}
+.filmes{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.filme__dados{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-filmes);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 48px;
+}
+
+.filme__dados-direito{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 50%;
+}
+
+.filme__dados-direito .imagem-capa{
+    width: 154px; /* Defina a largura desejada */
+    height: 154px; /* Defina a altura desejada */
+    border-radius: 50%; /* Cria a borda redonda */
+}
+
+.filme__dados-direito-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.filme__dados-direito-info .titulo{
+    padding-bottom: 20px;
+    color: var(--font-color1);
+    font-weight: 500;
+}
+
+.filme__dados-direito-info div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filme__dados-direito-info div img{
+    padding-right: 9px;
+}
+
+.filme__dados-direito-info div span{
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--font-color1);
+}
+
+.filme__dados-esquerdo{
+    display: flex;
+    width: 50%;
+}
+
+.filme__dados-esquerdo p{
+    color: var(--font-color1);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 177%;
+}
