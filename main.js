@@ -33,7 +33,11 @@ filme__dados.append(filme__dados_esquerdo)
 filmes.append(filme__dados)
 */
 
-const apiKey = "6560efb47058bc8922dffa6c91ca6f5e"
+
+
+import config from './config.js';
+
+const apiKey = config.apiKey;
 const baseUrl = 'https://image.tmdb.org/t/p/w154'
 const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=pt-BR`;
 
