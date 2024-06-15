@@ -1,40 +1,3 @@
-
-/*
-const filmes = document.querySelector('.filmes');
-
-const filme__dados = document.createElement('div').classList.add('filme__dados');
-const filme__dados_direito = document.createElement('div').classList.add('filme__dados-direito');
-const img = document.createElement('img');
-img.innerHTML =`${img/Image.png}`;
-const filme__dados_direito_info = document.createElement('div').classList.add('filme__dados-direito-info');
-const titulo = document.createElement('h2').classList.add('titulo').textContent = "Avengers Endgame (2019)"
-
-const div = document.createElement('div')
-
-const span = document.createElement('span').classList.add('nota').textContent="9.2"
-const imgStar = document.createElement('img').innerHTML = `${img/Star.png}`
-
-const spanFav = document.createElement('span').classList.add('favoritos')
-const imgFav = document.createElement('img').innerHTML = `${img/Heart.svg}`
-
-const filme__dados_esquerdo = document.createElement('div').classList.add('filme__dados-esquerdo');
-const texto = filme__dados_esquerdo.createElement('p').textContent="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-
-filme__dados.append(filme__dados_direito)
-filme__dados_direito.append(img)
-filme__dados_direito.append(filme__dados_direito_info)
-filme__dados_direito_info.append(titulo)
-filme__dados_direito_info.append(div)
-div.append(span)
-span.append(imgStar)
-div.append(spanFav)
-spanFav.append(imgFav)
-filme__dados.append(filme__dados_esquerdo)
-filmes.append(filme__dados)
-*/
-
-
-
 import config from './config.js';
 
 const apiKey = config.apiKey;
@@ -44,7 +7,14 @@ const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&lan
 async function getFilmes(){
     const api = await fetch(apiUrl)
     const json = await api.json()
-    console.log(json)
+    renderMovie(json)
+
+}
+
+function renderMovie(json){
+
+    const filmes = document.querySelector('.filmes');
+    filmes.innerHTML=""
 
     json.results.forEach(movies => {
         const movieImage = movies.poster_path
@@ -52,13 +22,6 @@ async function getFilmes(){
         const movieVotes = movies.vote_average
         const movieFav = false
         const movieDescription = movies.overview
-
-        console.log(movieImage)
-        console.log(movieName)
-        console.log(movieVotes)
-        console.log(movieDescription)
-
-        const filmes = document.querySelector('.filmes');
 
         const filme__dados = document.createElement('div');
         filme__dados.classList.add('filme__dados');
@@ -104,9 +67,21 @@ async function getFilmes(){
 
         filme__dados.append(filme__dados_esquerdo);
         filme__dados_esquerdo.append(texto);
-        filmes.append(filme__dados);
-    })  
+        filmes.append(filme__dados);   
+    })
 }
 
-getFilmes()
+async function searchMovies(query){
+    const searchAPI = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=pt-BR`;
+    const api = await fetch(searchAPI)
+    const json = await api.json();
+    renderMovie(json) 
+}
 
+let search = document.querySelector('.pesquisa__texto')
+search.addEventListener('input',(event)=>{
+    let query = event.target.value
+    query ? searchMovies(query) : getFilmes()
+})
+
+getFilmes()
