@@ -3,6 +3,7 @@ import config from './config.js';
 const apiKey = config.apiKey;
 const baseUrl = 'https://image.tmdb.org/t/p/w154'
 const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=pt-BR`;
+let favoritesMovies =[];
 
 async function getFilmes(){
     const api = await fetch(apiUrl)
@@ -20,8 +21,10 @@ function renderMovie(json){
         const movieImage = movies.poster_path
         const movieName = movies.title
         const movieVotes = movies.vote_average
-        const movieFav = false
+        let movieFav = false
         const movieDescription = movies.overview
+        const moveisId = movies.id
+
 
         const filme__dados = document.createElement('div');
         filme__dados.classList.add('filme__dados');
@@ -49,7 +52,26 @@ function renderMovie(json){
         const spanFav = document.createElement('span');
         spanFav.classList.add('favoritos');
         spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
+        
+        spanFav.addEventListener("click",()=>{
+            
+            if(movieFav){
+                movieFav= false;
+                spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
+                remove(moveisId,1)
+            }else{
+                movieFav= true;
+                spanFav.innerHTML = `<img src="img/Heart-preenchido.svg" alt="Favoritos"> Favoritar`;
+                save(moveisId)
+            }
+        })
 
+        /*
+        for(let i = 0; i <= favoritesMovies.length; i++){
+            console.log(favoritesMovies[i])
+        }
+        */
+        
         const filme__dados_esquerdo = document.createElement('div');
         filme__dados_esquerdo.classList.add('filme__dados-esquerdo');
 
@@ -68,8 +90,11 @@ function renderMovie(json){
         filme__dados.append(filme__dados_esquerdo);
         filme__dados_esquerdo.append(texto);
         filmes.append(filme__dados);   
+
+
     })
 }
+
 
 async function searchMovies(query){
     const searchAPI = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=pt-BR`;
@@ -85,3 +110,48 @@ search.addEventListener('input',(event)=>{
 })
 
 getFilmes()
+
+/**
+ * quando o usuário clicar no ícone do coração (que fica abaixo do nome do filme), 
+ * este coração deverá ser preenchido (ou seja, trocar a imagem do coração “vazio” para o ícone com coração “preenchido”)
+ * 
+ * Além disso, esse filme precisará ser salvo no Local Storage.
+
+    Claro, quando o usuário clicar novamente no coração, a imagem precisará voltar a ser o coração sem preenchimento, 
+    e o filme deverá ser removido do Local Storage.
+ 
+
+
+
+
+
+*/
+
+function save(id){
+    favoritesMovies.push(id)
+    return favoritesMovies;
+    show(favoritesMovies)
+    //localStorage.setItem('moveis',JSON.stringify(movie))
+    //favoritesMovies.forEach(ids =>{ })
+}
+
+function remove(id){
+    //favoritesMovies.splice(id,1)
+    favoritesMovies = favoritesMovies.filter(elementoId => elementoId != id)
+    //return favoritesMovies;
+    //show(favoritesMovies)
+    console.log(` removi o id ${id}`)
+    show(favoritesMovies)
+}
+
+function show(movies){
+    /*for (const ids in favoritesMovies) {
+        console.log(favoritesMovies[ids])
+    }
+    */
+
+    console.log(favoritesMovies.length)
+}
+
+
+console.log(favoritesMovies.length)
