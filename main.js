@@ -3,13 +3,12 @@ import config from './config.js';
 const apiKey = config.apiKey;
 const baseUrl = 'https://image.tmdb.org/t/p/w154'
 const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=pt-BR`;
-let favoritesMovies =[];
+let favoritesMovies =JSON.parse(localStorage.getItem('favoritesMovies'))||[];
 
 async function getFilmes(){
     const api = await fetch(apiUrl)
     const json = await api.json()
     renderMovie(json)
-
 }
 
 function renderMovie(json){
@@ -24,7 +23,6 @@ function renderMovie(json){
         let movieFav = false
         const movieDescription = movies.overview
         const moveisId = movies.id
-
 
         const filme__dados = document.createElement('div');
         filme__dados.classList.add('filme__dados');
@@ -53,12 +51,20 @@ function renderMovie(json){
         spanFav.classList.add('favoritos');
         spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
         
+        
+        if(favoritesMovies.includes(moveisId)){
+            movieFav = true;
+            spanFav.innerHTML = `<img src="img/Heart-preenchido.svg" alt="Favoritos"> Favoritar`;
+        } else {
+            spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
+        }
+        
         spanFav.addEventListener("click",()=>{
             
             if(movieFav){
                 movieFav= false;
                 spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
-                remove(moveisId,1)
+                remove(moveisId)
             }else{
                 movieFav= true;
                 spanFav.innerHTML = `<img src="img/Heart-preenchido.svg" alt="Favoritos"> Favoritar`;
@@ -66,12 +72,6 @@ function renderMovie(json){
             }
         })
 
-        /*
-        for(let i = 0; i <= favoritesMovies.length; i++){
-            console.log(favoritesMovies[i])
-        }
-        */
-        
         const filme__dados_esquerdo = document.createElement('div');
         filme__dados_esquerdo.classList.add('filme__dados-esquerdo');
 
@@ -95,7 +95,6 @@ function renderMovie(json){
     })
 }
 
-
 async function searchMovies(query){
     const searchAPI = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=pt-BR`;
     const api = await fetch(searchAPI)
@@ -109,49 +108,20 @@ search.addEventListener('input',(event)=>{
     query ? searchMovies(query) : getFilmes()
 })
 
-getFilmes()
+document.addEventListener("DOMContentLoaded", () => {
+    getFilmes();
+});
 
-/**
- * quando o usuário clicar no ícone do coração (que fica abaixo do nome do filme), 
- * este coração deverá ser preenchido (ou seja, trocar a imagem do coração “vazio” para o ícone com coração “preenchido”)
- * 
- * Além disso, esse filme precisará ser salvo no Local Storage.
-
-    Claro, quando o usuário clicar novamente no coração, a imagem precisará voltar a ser o coração sem preenchimento, 
-    e o filme deverá ser removido do Local Storage.
- 
-
-
-
-
-
-*/
-
-function save(id){
-    favoritesMovies.push(id)
-    return favoritesMovies;
-    show(favoritesMovies)
-    //localStorage.setItem('moveis',JSON.stringify(movie))
-    //favoritesMovies.forEach(ids =>{ })
-}
-
-function remove(id){
-    //favoritesMovies.splice(id,1)
-    favoritesMovies = favoritesMovies.filter(elementoId => elementoId != id)
-    //return favoritesMovies;
-    //show(favoritesMovies)
-    console.log(` removi o id ${id}`)
-    show(favoritesMovies)
-}
-
-function show(movies){
-    /*for (const ids in favoritesMovies) {
-        console.log(favoritesMovies[ids])
+function save(id) {
+    if (!favoritesMovies.includes(id)) {
+        favoritesMovies.push(id);
+        localStorage.setItem('favoritesMovies', JSON.stringify(favoritesMovies));
     }
-    */
+}
 
-    console.log(favoritesMovies.length)
+function remove(id) {
+    favoritesMovies = favoritesMovies.filter(elementoId => elementoId !== id);
+    localStorage.setItem('favoritesMovies', JSON.stringify(favoritesMovies));
 }
 
 
-console.log(favoritesMovies.length)
