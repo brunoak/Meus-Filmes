@@ -1,28 +1,31 @@
+
 import config from './config.js';
 
 const apiKey = config.apiKey;
-const baseUrl = 'https://image.tmdb.org/t/p/w154'
+const baseUrl = 'https://image.tmdb.org/t/p/w154';
 const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=pt-BR`;
-let favoritesMovies =JSON.parse(localStorage.getItem('favoritesMovies'))||[];
+let favoritesMovies = JSON.parse(localStorage.getItem('favoritesMovies')) || [];
+let checkbox = document.querySelector('.pesquisa__check');
+let allMovies = []; // Armazenar todos os filmes carregados
 
-async function getFilmes(){
-    const api = await fetch(apiUrl)
-    const json = await api.json()
-    renderMovie(json)
+async function getFilmes() {
+    const api = await fetch(apiUrl);
+    const json = await api.json();
+    allMovies = json.results; // Armazena todos os filmes carregados
+    renderMovie(json.results); // Passa apenas a lista de filmes
 }
 
-function renderMovie(json){
-
+function renderMovie(movies) { // Altere o parâmetro para aceitar uma lista de filmes
     const filmes = document.querySelector('.filmes');
-    filmes.innerHTML=""
+    filmes.innerHTML = "";
 
-    json.results.forEach(movies => {
-        const movieImage = movies.poster_path
-        const movieName = movies.title
-        const movieVotes = movies.vote_average
-        let movieFav = false
-        const movieDescription = movies.overview
-        const moveisId = movies.id
+    movies.forEach(movie => { // Altere json.results para movies
+        const movieImage = movie.poster_path;
+        const movieName = movie.title;
+        const movieVotes = movie.vote_average;
+        let movieFav = false;
+        const movieDescription = movie.overview;
+        const movieId = movie.id; // Corrigir a variável moveisId para movieId
 
         const filme__dados = document.createElement('div');
         filme__dados.classList.add('filme__dados');
@@ -31,7 +34,7 @@ function renderMovie(json){
         filme__dados_direito.classList.add('filme__dados-direito');
 
         const img = document.createElement('img');
-        img.classList.add('imagem-capa')
+        img.classList.add('imagem-capa');
         img.src = baseUrl + movieImage;
 
         const filme__dados_direito_info = document.createElement('div');
@@ -49,28 +52,25 @@ function renderMovie(json){
 
         const spanFav = document.createElement('span');
         spanFav.classList.add('favoritos');
-        spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
-        
-        
-        if(favoritesMovies.includes(moveisId)){
+
+        if (favoritesMovies.includes(movieId)) { // Corrigir moveisId para movieId
             movieFav = true;
             spanFav.innerHTML = `<img src="img/Heart-preenchido.svg" alt="Favoritos"> Favoritar`;
         } else {
             spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
         }
-        
-        spanFav.addEventListener("click",()=>{
-            
-            if(movieFav){
-                movieFav= false;
+
+        spanFav.addEventListener("click", () => {
+            if (movieFav) {
+                movieFav = false;
                 spanFav.innerHTML = `<img src="img/Heart.svg" alt="Favoritos"> Favoritar`;
-                remove(moveisId)
-            }else{
-                movieFav= true;
+                remove(movieId); // Corrigir moveisId para movieId
+            } else {
+                movieFav = true;
                 spanFav.innerHTML = `<img src="img/Heart-preenchido.svg" alt="Favoritos"> Favoritar`;
-                save(moveisId)
+                save(movieId); // Corrigir moveisId para movieId
             }
-        })
+        });
 
         const filme__dados_esquerdo = document.createElement('div');
         filme__dados_esquerdo.classList.add('filme__dados-esquerdo');
@@ -89,24 +89,22 @@ function renderMovie(json){
 
         filme__dados.append(filme__dados_esquerdo);
         filme__dados_esquerdo.append(texto);
-        filmes.append(filme__dados);   
-
-
-    })
+        filmes.append(filme__dados);
+    });
 }
 
-async function searchMovies(query){
+async function searchMovies(query) {
     const searchAPI = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=pt-BR`;
-    const api = await fetch(searchAPI)
+    const api = await fetch(searchAPI);
     const json = await api.json();
-    renderMovie(json) 
+    renderMovie(json.results); // Passa apenas a lista de filmes
 }
 
-let search = document.querySelector('.pesquisa__texto')
-search.addEventListener('input',(event)=>{
-    let query = event.target.value
-    query ? searchMovies(query) : getFilmes()
-})
+let search = document.querySelector('.pesquisa__texto');
+search.addEventListener('input', (event) => {
+    let query = event.target.value;
+    query ? searchMovies(query) : getFilmes();
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     getFilmes();
@@ -124,4 +122,15 @@ function remove(id) {
     localStorage.setItem('favoritesMovies', JSON.stringify(favoritesMovies));
 }
 
+function renderFavoriteMovies() {
+    const favoriteMovieDetails = allMovies.filter(movie => favoritesMovies.includes(movie.id));
+    renderMovie(favoriteMovieDetails); // Renderiza os filmes favoritos filtrados
+}
 
+checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+        renderFavoriteMovies();
+    } else {
+        getFilmes();
+    }
+});
